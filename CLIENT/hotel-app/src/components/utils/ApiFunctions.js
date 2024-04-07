@@ -13,7 +13,7 @@ export async function addRoom(photo, roomType, roomPrice) {
 
   const response = await api.post("/rooms/add/new-room", formData);
 
-  return response.status === 201 ? true : false;
+  return response.status === 201;
 }
 
 /* This function gets all room types from thee database */
@@ -23,5 +23,25 @@ export async function getRoomTypes() {
     return response.data;
   } catch (error) {
     throw new Error("Error fetching room types");
+  }
+}
+
+/* This function gets all rooms from the database */
+export async function getAllRooms() {
+  try {
+    const result = await api.get("/rooms/all-rooms");
+    return result.data;
+  } catch (error) {
+    throw new Error("Error fetching rooms");
+  }
+}
+
+/* This function deletes a room  by id from the database */
+export async function deleteRoom(roomId) {
+  try {
+    const result = await api.delete(`/rooms/delete/room/${roomId}`);
+    return result.data;
+  } catch (e) {
+    throw new Error(`Error deleting room ${e.message}`);
   }
 }
