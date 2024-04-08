@@ -98,10 +98,6 @@ const ExistingRooms = () => {
               <h2>Existing Rooms</h2>
             </div>
 
-            {/*<Col md={6} className="mb-3 mb-md-0">*/}
-            {/*  <RoomFilter data={rooms} setFilteredData={setFilteredRooms} />*/}
-            {/*</Col>*/}
-
             <Row>
               <Col md={6} className="mb-2 md-mb-0">
                 <RoomFilter data={rooms} setFilteredData={setFilteredRooms} />
