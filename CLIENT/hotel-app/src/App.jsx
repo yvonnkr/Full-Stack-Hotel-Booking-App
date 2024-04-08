@@ -6,12 +6,15 @@ import Home from "./components/home/Home.jsx";
 import AddRoom from "./components/room/AddRoom";
 import ExistingRooms from "./components/room/ExistingRooms";
 import EditRoom from "./components/room/EditRoom.jsx";
+import NavBar from "./components/layout/NavBar.jsx";
+import Footer from "./components/layout/Footer.jsx";
 
 function App() {
   return (
     <>
       <main>
         <Router>
+          <NavBar />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/edit-room/:roomId" element={<EditRoom />} />
@@ -19,6 +22,7 @@ function App() {
             <Route path="/add-room" element={<AddRoom />} />
           </Routes>
         </Router>
+        <Footer />
       </main>
     </>
   );
