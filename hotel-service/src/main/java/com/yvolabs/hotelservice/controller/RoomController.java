@@ -1,5 +1,6 @@
 package com.yvolabs.hotelservice.controller;
 
+import com.yvolabs.hotelservice.dto.BookingResponse;
 import com.yvolabs.hotelservice.dto.RoomResponse;
 import com.yvolabs.hotelservice.exception.PhotoRetrievalException;
 import com.yvolabs.hotelservice.exception.ResourceNotFoundException;
@@ -107,11 +108,11 @@ public class RoomController {
     private RoomResponse getRoomResponse(Room room) {
         List<BookedRoom> bookings = getAllBookingsByRoomId(room.getId());
 
-//        List<BookingResponse> bookingInfo = bookings
-//                .stream()
-//                .map(booking -> new BookingResponse(booking.getBookingId(),
-//                        booking.getCheckInDate(),
-//                        booking.getCheckOutDate(), booking.getBookingConfirmationCode())).toList();
+        List<BookingResponse> bookingInfo = bookings
+                .stream()
+                .map(booking -> new BookingResponse(booking.getBookingId(),
+                        booking.getCheckInDate(),
+                        booking.getCheckOutDate(), booking.getBookingConfirmationCode())).toList();
 
         byte[] photoBytes = null;
         Blob photoBlob = room.getPhoto();
@@ -124,7 +125,7 @@ public class RoomController {
         }
         return new RoomResponse(room.getId(),
                 room.getRoomType(), room.getRoomPrice(),
-                room.isBooked(), photoBytes);
+                room.isBooked(), photoBytes, bookingInfo);
 
     }
 
