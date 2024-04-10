@@ -1,6 +1,7 @@
 package com.yvolabs.hotelservice.service;
 
 import com.yvolabs.hotelservice.exception.InvalidBookingRequestException;
+import com.yvolabs.hotelservice.exception.ResourceNotFoundException;
 import com.yvolabs.hotelservice.model.BookedRoom;
 import com.yvolabs.hotelservice.model.Room;
 import com.yvolabs.hotelservice.repository.BookingRepository;
@@ -32,7 +33,9 @@ public class BookingService implements IBookingService {
 
     @Override
     public BookedRoom findByBookingConfirmationCode(String confirmationCode) {
-        return bookingRepository.findByBookingConfirmationCode(confirmationCode);
+        return bookingRepository.findByBookingConfirmationCode(confirmationCode)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Sorry, No booking found with booking code: " + confirmationCode));
     }
 
     @Override
