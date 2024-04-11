@@ -10,6 +10,7 @@ import com.yvolabs.hotelservice.service.BookingService;
 import com.yvolabs.hotelservice.service.IRoomService;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,17 +54,7 @@ public class RoomController {
     @GetMapping("/all-rooms")
     public ResponseEntity<List<RoomResponse>> getAllRooms() throws SQLException {
         List<Room> rooms = roomService.getAllRooms();
-        List<RoomResponse> roomResponses = new ArrayList<>();
-        for (Room room : rooms) {
-            byte[] photoBytes = roomService.getRoomPhotoByRoomId(room.getId());
-            if (photoBytes != null && photoBytes.length > 0) {
-                String base64Photo = Base64.encodeBase64String(photoBytes);
-                RoomResponse roomResponse = getRoomResponse(room);
-                roomResponse.setPhoto(base64Photo);
-                roomResponses.add(roomResponse);
-            }
-        }
-        return ResponseEntity.ok(roomResponses);
+        return ResponseEntity.ok(getRoomResponses(rooms));
     }
 
     @DeleteMapping("/delete/room/{roomId}")
@@ -101,8 +93,34 @@ public class RoomController {
             return ResponseEntity.ok(Optional.of(roomResponse));
 
         }).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+    }
 
+    @GetMapping("/available-rooms")
+    public ResponseEntity<List<RoomResponse>> getAvailableRooms(
+            @RequestParam("checkInDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
+            @RequestParam("checkOutDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
+            @RequestParam("roomType") String roomType) throws SQLException {
 
+        List<Room> availableRooms = roomService.getAvailableRooms(checkInDate, checkOutDate, roomType);
+
+        List<RoomResponse> roomResponses = getRoomResponses(availableRooms);
+        return roomResponses.isEmpty() ?
+                ResponseEntity.noContent().build() :
+                ResponseEntity.ok(roomResponses);
+    }
+
+    private List<RoomResponse> getRoomResponses(List<Room> availableRooms) throws SQLException {
+        List<RoomResponse> roomResponses = new ArrayList<>();
+        for (Room room : availableRooms) {
+            byte[] photoBytes = roomService.getRoomPhotoByRoomId(room.getId());
+            if (photoBytes != null && photoBytes.length > 0) {
+                String base64Photo = Base64.encodeBase64String(photoBytes);
+                RoomResponse roomResponse = getRoomResponse(room);
+                roomResponse.setPhoto(base64Photo);
+                roomResponses.add(roomResponse);
+            }
+        }
+        return roomResponses;
     }
 
     private RoomResponse getRoomResponse(Room room) {
