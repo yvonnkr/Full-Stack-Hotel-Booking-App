@@ -37,6 +37,7 @@ const RoomSearch = () => {
       .then((response) => {
         setAvailableRooms(response.data);
         setTimeout(() => setIsLoading(false), 2000);
+        setErrorMessage("");
       })
       .catch((error) => {
         console.log(error);
