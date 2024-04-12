@@ -3,3 +3,4 @@ README.md
 docker-compose.yaml
 /CLIENT/.vscode
 /convertToJson.json
+/hotel-service/src/main/resources/.env
