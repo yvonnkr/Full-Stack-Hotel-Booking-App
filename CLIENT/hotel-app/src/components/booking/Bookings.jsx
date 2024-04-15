@@ -27,6 +27,7 @@ const Bookings = () => {
       await cancelBooking(bookingId);
       const data = await getAllBookings();
       setBookingInfo(data);
+      setError("");
     } catch (error) {
       setError(error.message);
     }
